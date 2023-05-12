@@ -1,0 +1,51 @@
+cabal-version:   3.4
+name:            coexp
+version:         0.1.0.0
+license:         MIT
+license-file:    LICENSE
+maintainer:      git@vikraman.org
+author:          Vikraman Choudhury
+homepage:        https://github.com/vikraman/coexp
+synopsis:        Continuations and Co-exponentials
+category:        Control
+build-type:      Simple
+extra-doc-files: CHANGELOG.md
+
+common common-deps
+  default-language: GHC2021
+  build-depends:
+    base ^>=4.17.0.0,
+    mtl ^>=2.3
+  ghc-options:
+    -Wall
+    -Wextra
+    -Werror
+    -O2
+  other-modules:
+    Paths_coexp
+
+library
+    import:           common-deps
+    exposed-modules:
+        Control.Monad.Control
+        Data.Coexp
+        Data.Functor.Strong
+    hs-source-dirs:   src
+    build-depends:
+        bifunctors ^>=5.6,
+        profunctors ^>=5.6,
+
+executable coexp
+    import:           common-deps
+    main-is:          Main.hs
+    hs-source-dirs:   app
+    build-depends:
+        coexp
+
+test-suite coexp-test
+    import:           common-deps
+    type:             exitcode-stdio-1.0
+    main-is:          Main.hs
+    hs-source-dirs:   test
+    build-depends:
+        coexp
