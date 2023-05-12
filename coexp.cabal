@@ -14,7 +14,7 @@ extra-doc-files: CHANGELOG.md
 common common-deps
   default-language: GHC2021
   build-depends:
-    base ^>=4.17.0.0,
+    base >=4.16 && <5,
     mtl ^>=2.3
   ghc-options:
     -Wall
