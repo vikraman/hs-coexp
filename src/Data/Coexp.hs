@@ -2,6 +2,9 @@
 
 module Data.Coexp
   ( Coexp (..),
+    kont,
+    colamCont,
+    coappCont,
   )
 where
 
@@ -34,6 +37,9 @@ eval = uncurry id
 runCoexp :: (a - a) (Coexp r) -> r
 runCoexp = eval . swap . second unKont . unCoexp
 
+kont :: a # Coexp r -> a -> r
+kont = unKont . snd . unCoexp
+
 cmapCont :: (a ~> b) (Cont r) -> ((a - c) (Coexp r) ~> (b - c) (Coexp r)) (Cont r)
 cmapCont f = leftStrength . fmap f
 
@@ -58,3 +64,9 @@ instance MonadControl (Cont r) (Coexp r) where
   councurry = councurryCont
   coeval = coevalCont
   couneval = counevalCont
+
+colamCont :: ((a -> r) -> Cont r b) -> Cont r (b + a)
+colamCont f = colam (f . kont)
+
+coappCont :: b + a -> (a -> r) -> Cont r b
+coappCont s k = coapp s $ Coexp ((), Kont k)

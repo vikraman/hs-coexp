@@ -4,6 +4,7 @@
 module Control.Monad.Control
   ( type (+),
     type (-),
+    type (#),
     type (~>),
     MonadControl (..),
     colam,
