@@ -31,25 +31,25 @@ instance (Functor f) => LeftStrong f (Coexp r) where
 eval :: (a -> b, a) -> b
 eval = uncurry id
 
-runCoexp :: Coexp r a a -> r
+runCoexp :: (a - a) (Coexp r) -> r
 runCoexp = eval . swap . second unKont . unCoexp
 
-cmapCont :: (a -> Cont r b) -> Coexp r c a -> Cont r (Coexp r c b)
+cmapCont :: (a ~> b) (Cont r) -> ((a - c) (Coexp r) ~> (b - c) (Coexp r)) (Cont r)
 cmapCont f = leftStrength . fmap f
 
-counevalCont :: Coexp r a (Either b a) -> Cont r b
+counevalCont :: (((b + a) - a) (Coexp r) ~> b) (Cont r)
 counevalCont = either pure (cont . const . runCoexp) . leftStrength
 
-cocurryCont :: (c -> Cont r (Either b a)) -> Coexp r a c -> Cont r b
+cocurryCont :: (c ~> b + a) (Cont r) -> ((c - a) (Coexp r) ~> b) (Cont r)
 cocurryCont f = counevalCont <=< cmapCont f
 
-split :: (Either a b -> c) -> (a -> c, b -> c)
+split :: (a + b -> c) -> (a -> c, b -> c)
 split f = (f . Left, f . Right)
 
-coevalCont :: b -> Cont r (Either (Coexp r a b) a)
+coevalCont :: (b ~> (b - a) (Coexp r) + a) (Cont r)
 coevalCont b = cont (eval . second (Coexp . (b,) . Kont) . split)
 
-councurryCont :: (Coexp r a c -> Cont r b) -> c -> Cont r (Either b a)
+councurryCont :: ((c - a) (Coexp r) ~> b) (Cont r) -> (c ~> b + a) (Cont r)
 councurryCont f = either (fmap Left . f) (pure . Right) <=< coevalCont
 
 instance MonadControl (Cont r) (Coexp r) where
