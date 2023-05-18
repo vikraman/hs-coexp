@@ -8,6 +8,8 @@ module Control.Monad.Control
     MonadControl (..),
     colam,
     coapp,
+    lem,
+    callCC,
   )
 where
 
@@ -18,6 +20,10 @@ type a + b = Either a b
 infixr 5 -
 
 type (b - a) k = k a b
+
+infix 7 #
+
+type a # k = (() - a) k
 
 infixr 3 ~>
 
@@ -34,8 +40,17 @@ class (Monad m) => MonadControl m k where
   couneval :: (((b + a) - a) k ~> b) m
   couneval = cocurry pure
 
-colam :: (MonadControl m k) => (((() - a) k ~> b) m ~> b + a) m
+colam :: (MonadControl m k) => ((a # k ~> b) m ~> b + a) m
 colam = flip councurry ()
 
-coapp :: (MonadControl m k) => b + a -> ((() - a) k ~> b) m
+coapp :: (MonadControl m k) => b + a -> (a # k ~> b) m
 coapp = cocurry . const . pure
+
+lem :: (MonadControl m k) => (() ~> a # k + a) m
+lem () = colam pure
+
+codiag :: a + a -> a
+codiag = either id id
+
+callCC :: (MonadControl m k) => ((a # k ~> a) m ~> a) m
+callCC = fmap codiag . colam
