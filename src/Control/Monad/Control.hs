@@ -6,6 +6,8 @@ module Control.Monad.Control
     type (-),
     type (~>),
     MonadControl (..),
+    colam,
+    coapp,
   )
 where
 
@@ -31,3 +33,9 @@ class (Monad m) => MonadControl m k where
 
   couneval :: (((b + a) - a) k ~> b) m
   couneval = cocurry pure
+
+colam :: (MonadControl m k) => (((() - a) k ~> b) m ~> b + a) m
+colam = flip councurry ()
+
+coapp :: (MonadControl m k) => b + a -> ((() - a) k ~> b) m
+coapp = cocurry . const . pure
