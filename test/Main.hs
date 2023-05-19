@@ -1,10 +1,12 @@
 module Main (main) where
 
 import Data.Maybe
+import Examples.Eff.Toss qualified as T
 import Examples.SAT.Backtrack qualified as B
 import Examples.SAT.Guess qualified as G
 import Examples.SAT.Prop
 import Test.Tasty
+import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck
 
 main :: IO ()
@@ -38,5 +40,27 @@ main =
                 let genv = G.sat phi
                     benv = fromMaybe mempty (B.sat phi)
                  in benv `isMatchingSubEnvOf` genv .||. eval phi benv == eval phi genv
+          ],
+        testGroup
+          "Examples.Eff"
+          [ testGroup
+              "Toss"
+              [ testCase "handle pure with Maybe" $
+                  T.handleOpWithMaybe (pure (42 :: Int)) @?= Just 42,
+                testCase "handle fail with Maybe" $
+                  T.handleOpWithMaybe (T.fail @Int) @?= Nothing,
+                testCase "handle pure with List" $
+                  T.handleOpWithList (pure (42 :: Int)) @?= [42],
+                testCase "handle toss with List" $
+                  T.handleOpWithList T.toss @?= [T.Head, T.Tail],
+                testCase "handle drunkToss with List" $
+                  T.handleOpWithList T.drunkToss @?= [T.Head, T.Tail],
+                testCase "handle drunkTosses 2 with List" $
+                  T.handleOpWithList (T.drunkTosses 2) @?= [[T.Head, T.Head], [T.Head, T.Tail], [T.Tail, T.Head], [T.Tail, T.Tail]],
+                testCase "handle drunkTosses 2 with Maybe then List" $
+                  T.handleOpWithMaybeThenList (T.drunkTosses 2) @?= [Just [T.Head, T.Head], Just [T.Head, T.Tail], Nothing, Just [T.Tail, T.Head], Just [T.Tail, T.Tail], Nothing, Nothing],
+                testCase "handle drunkTosses 2 with List then Maybe" $
+                  T.handleOpWithListThenMaybe (T.drunkTosses 2) @?= Just [[T.Head, T.Head]]
+              ]
           ]
       ]

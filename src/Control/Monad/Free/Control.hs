@@ -1,6 +1,11 @@
 {-# LANGUAGE DerivingStrategies #-}
 
-module Control.Monad.Free.Control where
+module Control.Monad.Free.Control
+  ( Free (..),
+    MonadFree (..),
+    foldFree,
+  )
+where
 
 import Control.Monad.Cont
 import Control.Monad.Control

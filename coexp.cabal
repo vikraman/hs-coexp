@@ -31,6 +31,7 @@ library
         Data.Coexp
         Data.Coexp.Backtrack
         Data.Functor.Strong
+        Examples.Eff.Toss
         Examples.SAT.Backtrack
         Examples.SAT.Guess
         Examples.SAT.Prop
@@ -57,4 +58,5 @@ test-suite coexp-test
     build-depends:
         coexp,
         tasty ^>=1.4,
+        tasty-hunit ^>=0.10,
         tasty-quickcheck ^>=0.10,
