@@ -68,4 +68,4 @@ jobs:
         run: cabal build all
 
       - name: Run tests
-        run: cabal test all
+        run: cabal run coexp-test -- --quickcheck-tests 1000

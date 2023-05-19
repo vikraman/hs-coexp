@@ -19,7 +19,6 @@ common common-deps
   ghc-options:
     -Wall
     -Wextra
-    -Werror
     -O2
   other-modules:
     Paths_coexp
@@ -30,12 +29,18 @@ library
         Control.Monad.Control
         Control.Monad.Free.Control
         Data.Coexp
+        Data.Coexp.Backtrack
         Data.Functor.Strong
+        Examples.SAT.Backtrack
+        Examples.SAT.Guess
+        Examples.SAT.Prop
     hs-source-dirs:   src
     build-depends:
         bifunctors ^>=5.6,
+        containers ^>=0.6,
         free ^>=5.2,
         profunctors ^>=5.6,
+        tasty-quickcheck ^>=0.10,
 
 executable coexp
     import:           common-deps
@@ -50,4 +55,6 @@ test-suite coexp-test
     main-is:          Main.hs
     hs-source-dirs:   test
     build-depends:
-        coexp
+        coexp,
+        tasty ^>=1.4,
+        tasty-quickcheck ^>=0.10,
