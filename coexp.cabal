@@ -26,6 +26,7 @@ common common-deps
 library
     import:           common-deps
     exposed-modules:
+        Control.Arrow.Coapply
         Control.Monad.Control
         Control.Monad.Free.Control
         Data.Coexp
