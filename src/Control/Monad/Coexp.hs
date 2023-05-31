@@ -1,12 +1,12 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Control.Monad.Control
+module Control.Monad.Coexp
   ( type (+),
     type (-),
     type (#),
     type (~>),
-    MonadControl (..),
+    MonadCoexp (..),
     lem,
     callCC,
     throw,
@@ -17,27 +17,22 @@ infixr 5 +
 
 type a + b = Either a b
 
-infix 7 #
-
-type a # k = k a
-
 infixr 5 -
 
-type (b - a) k = (b, a # k)
+type (b - a) k = k a b
+
+infix 7 #
+
+type a # k = (() - a) k
 
 infixr 3 ~>
 
 type (a ~> b) m = a -> m b
 
-class (Monad m) => MonadControl m k where
-  colam :: ((a # k ~> b) m ~> (b + a)) m
-  coapp :: ((b + a, a # k) ~> b) m
-
+class (Monad m) => MonadCoexp m k where
+  cmap :: (c ~> d) m -> ((c - a) k ~> (d - a) k) m
   cocurry :: (c ~> b + a) m -> ((c - a) k ~> b) m
-  cocurry f (c, k) = f c >>= coapp . (,k)
-
   councurry :: ((c - a) k ~> b) m -> (c ~> b + a) m
-  councurry f c = colam (f . (c,))
 
   coeval :: (b ~> (b - a) k + a) m
   coeval = councurry pure
@@ -45,14 +40,20 @@ class (Monad m) => MonadControl m k where
   couneval :: (((b + a) - a) k ~> b) m
   couneval = cocurry pure
 
-lem :: (MonadControl m k) => (() ~> a # k + a) m
+  colam :: (MonadCoexp m k) => ((a # k ~> b) m ~> b + a) m
+  colam = flip councurry ()
+
+  coapp :: (MonadCoexp m k) => ((b + a, a # k) ~> b) m
+  coapp = uncurry (cocurry . const . pure)
+
+lem :: (MonadCoexp m k) => (() ~> a # k + a) m
 lem () = colam pure
 
 codiag :: a + a -> a
 codiag = either id id
 
-callCC :: (MonadControl m k) => ((a # k ~> a) m ~> a) m
+callCC :: (MonadCoexp m k) => ((a # k ~> a) m ~> a) m
 callCC = fmap codiag . colam
 
-throw :: (MonadControl m k) => ((a, a # k) ~> b) m
-throw (a, k) = coapp (Right a, k)
+throw :: (MonadCoexp m k) => ((a - a) k ~> b) m
+throw = cocurry (pure . Right)

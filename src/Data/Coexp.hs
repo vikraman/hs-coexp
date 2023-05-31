@@ -9,8 +9,9 @@ module Data.Coexp
 where
 
 import Control.Monad
+import Control.Monad.Coexp
 import Control.Monad.Cont
-import Control.Monad.Control
+import Control.Monad.Control qualified as C
 import Data.Bifunctor
 import Data.Functor.Contravariant
 import Data.Functor.Strong
@@ -58,7 +59,7 @@ coevalCont b = cont (eval . second (Coexp . (b,) . Kont) . split)
 councurryCont :: ((c - a) (Coexp r) ~> b) (Cont r) -> (c ~> b + a) (Cont r)
 councurryCont f = either (fmap Left . f) (pure . Right) <=< coevalCont
 
-instance MonadControl (Cont r) (Coexp r) where
+instance MonadCoexp (Cont r) (Coexp r) where
   cmap = cmapCont
   cocurry = cocurryCont
   councurry = councurryCont
@@ -68,5 +69,15 @@ instance MonadControl (Cont r) (Coexp r) where
 colamCont :: ((a -> r) -> Cont r b) -> Cont r (b + a)
 colamCont f = colam (f . kont)
 
-coappCont :: b + a -> (a -> r) -> Cont r b
-coappCont s k = coapp s $ Coexp ((), Kont k)
+coappCont :: (b + a, a -> r) -> Cont r b
+coappCont (e, k) = coapp (e, Coexp ((), Kont k))
+
+colamKont :: (Kont r a -> Cont r b) -> Cont r (b + a)
+colamKont f = colamCont (f . Kont)
+
+coappKont :: (b + a, Kont r a) -> Cont r b
+coappKont (e, k) = coappCont (e, unKont k)
+
+instance C.MonadControl (Cont r) (Kont r) where
+  colam = colamKont
+  coapp = coappKont

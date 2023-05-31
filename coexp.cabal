@@ -27,11 +27,13 @@ library
     import:           common-deps
     exposed-modules:
         Control.Arrow.Coapply
+        Control.Monad.Coexp
         Control.Monad.Control
         Control.Monad.Free.Control
         Data.Coexp
         Data.Coexp.Backtrack
         Data.Functor.Strong
+        Data.Profunctor.Coclosed
         Examples.Eff.Toss
         Examples.SAT.Backtrack
         Examples.SAT.Guess

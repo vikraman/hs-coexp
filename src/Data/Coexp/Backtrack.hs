@@ -8,7 +8,7 @@ assumeLeft :: ((a -> r) -> Cont r b) -> Cont r (b + a)
 assumeLeft = colamCont
 
 resolveLeft :: (b + a) -> (a -> r) -> Cont r b
-resolveLeft = coappCont
+resolveLeft = curry coappCont
 
 swap :: a + b -> b + a
 swap = either Right Left
