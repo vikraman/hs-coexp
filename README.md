@@ -1,4 +1,4 @@
-# coexp
+# hs-coexp
 
 [![ci](https://github.com/vikraman/coexp/actions/workflows/ci.yml/badge.svg)](https://github.com/vikraman/coexp)
 
