@@ -5,7 +5,7 @@ license:         MIT
 license-file:    LICENSE
 maintainer:      git@vikraman.org
 author:          Vikraman Choudhury
-homepage:        https://github.com/vikraman/coexp
+homepage:        https://github.com/vikraman/hs-coexp
 synopsis:        Continuations and Co-exponentials
 category:        Control
 build-type:      Simple
