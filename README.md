@@ -21,13 +21,15 @@ The examples are implemented in the following modules.
 - `Examples.SAT.Guess`: bruteforce SAT solver using continuations
 - `Examples.SAT.Backtrack`: backtracking SAT solver using the coexponential combinators
 - `Examples.Eff.Toss`: Sam Lindley's drunken toss example of effect handlers encoded using codensity
+- `Examples.TS.Backtrack`: backtracking tree search using the coexponential combinators
 
 ## Usage
 
 There is a test suite which:
 
 - _benchmarks_ the brute-force SAT solver against the backtracking SAT solver, and
-- runs some test cases on the drunken toss example.
+- runs some test cases on the drunken toss example,
+- tests the tree search example.
 
 ``` sh
 $ cabal build all
