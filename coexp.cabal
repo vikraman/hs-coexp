@@ -38,6 +38,8 @@ library
         Examples.SAT.Backtrack
         Examples.SAT.Guess
         Examples.SAT.Prop
+        Examples.TS.Backtrack
+        Examples.TS.Tree
     hs-source-dirs:   src
     build-depends:
         bifunctors ^>=5.6,

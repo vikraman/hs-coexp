@@ -5,6 +5,8 @@ import Examples.Eff.Toss qualified as T
 import Examples.SAT.Backtrack qualified as B
 import Examples.SAT.Guess qualified as G
 import Examples.SAT.Prop
+import Examples.TS.Backtrack qualified as B
+import Examples.TS.Tree
 import Test.Tasty
 import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck
@@ -61,6 +63,19 @@ main =
                   T.handleOpWithMaybeThenList (T.drunkTosses 2) @?= [Just [T.Head, T.Head], Just [T.Head, T.Tail], Nothing, Just [T.Tail, T.Head], Just [T.Tail, T.Tail], Nothing, Nothing],
                 testCase "handle drunkTosses 2 with List then Maybe" $
                   T.handleOpWithListThenMaybe (T.drunkTosses 2) @?= Just [[T.Head, T.Head]]
+              ]
+          ],
+        testGroup
+          "Examples.TS"
+          [ testGroup
+              "backtracking tree search"
+              [ testCase "finds a shortest path" $
+                  let tree1 :: Tree Int =
+                        Node
+                          (Node (Node Leaf 2 Leaf) 3 (Node Leaf 4 Leaf))
+                          5
+                          (Node (Node Leaf 6 Leaf) 7 (Node Leaf 8 Leaf))
+                   in B.find tree1 (== 6) @?= Just [6, 7, 5]
               ]
           ]
       ]
